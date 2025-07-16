@@ -1,0 +1,42 @@
+package com.example.databasedemo;
+
+import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.widget.Button;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+    Button showDataButton;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        showDataButton = findViewById(R.id.showDataButton);
+        showDataButton.setOnClickListener(v -> {
+            SQLiteDatabase db = openOrCreateDatabase("school.db", MODE_PRIVATE, null);
+            Cursor cursor = db.rawQuery("SELECT * FROM student", null);
+            StringBuilder data = new StringBuilder();
+            while (cursor.moveToNext()) {
+                data.append("ID: ").append(cursor.getInt(0))
+                    .append(" Name: ").append(cursor.getString(1))
+                    .append(" Surname: ").append(cursor.getString(2))
+                    .append(" Marks: ").append(cursor.getInt(3))
+                    .append("\n");
+            }
+            cursor.close();
+
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Student Data")
+                    .setMessage(data.toString())
+                    .setPositiveButton("OK", (dialog, which) -> {})
+                    .show();
+        });
+    }
+}
+
+
