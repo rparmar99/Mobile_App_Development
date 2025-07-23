@@ -1,48 +1,82 @@
+Practical 4 - Color Menu
+
+activity_main.xml
+
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:hint="Enter Text Here" />
-
-    <Button
-        android:id="@+id/submitButton"
+    <TextView
+        android:id="@+id/color_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Submit"
-        android:layout_below="@id/editText"
-        android:layout_centerHorizontal="true" />
+        android:text="Select a color from the menu"
+        android:textSize="18sp"
+        android:layout_centerInParent="true" />
+
 </RelativeLayout>
 
 
-package com.example.toastapp;
 
+options_menu.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/color_red" android:title="Red" />
+    <item android:id="@+id/color_green" android:title="Green" />
+    <item android:id="@+id/color_blue" android:title="Blue" />
+    <item android:id="@+id/color_yellow" android:title="Yellow" />
+</menu>
+
+
+MainActivity.java
+
+package com.example.bgcolorchanger;
+
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
+
+    RelativeLayout rootLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        rootLayout = findViewById(R.id.root_layout);
+    }
 
-        EditText editText = findViewById(R.id.editText);
-        Button submitButton = findViewById(R.id.submitButton);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+        return true;
+    }
 
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = editText.getText().toString();
-                Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
-            }
-        });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.color_red:
+                rootLayout.setBackgroundColor(Color.RED);
+                return true;
+            case R.id.color_green:
+                rootLayout.setBackgroundColor(Color.GREEN);
+                return true;
+            case R.id.color_blue:
+                rootLayout.setBackgroundColor(Color.BLUE);
+                return true;
+            case R.id.color_yellow:
+                rootLayout.setBackgroundColor(Color.YELLOW);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
