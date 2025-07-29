@@ -1,34 +1,103 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+Activity_main3.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    tools:context=".MainActivity3">
 
-    <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextView"
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Type a programming language" />
-</RelativeLayout>
+        android:max="100"
+        android:progress="0" />
+
+    <TextView
+        android:id="@+id/textViewProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Progress: 0%"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/buttonStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Task"
+        android:layout_marginTop="24dp" />
+</LinearLayout>
 
 
-package com.example.autocompletetextview;
 
-import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+
+
+MainActivity3.java
+
+
+public class MainActivity3 extends AppCompatActivity {
+    ProgressBar progressBar;
+    TextView textViewProgress;
+    Button buttonStart;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main3);
 
-        AutoCompleteTextView autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
+        progressBar = findViewById(R.id.progressBar);
+        textViewProgress = findViewById(R.id.textViewProgress);
+        buttonStart = findViewById(R.id.buttonStart);
 
-        String[] languages = {"Java", "JavaScript", "Python", "C#", "C++", "Kotlin", "Swift"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_dropdown_item_1line, languages);
-        autoCompleteTextView.setAdapter(adapter);
+        buttonStart.setOnClickListener(v -> {
+            new MyAsyncTask().execute();
+        });
+
+    }
+
+    private class MyAsyncTask extends AsyncTask<Void, Integer, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setProgress(0);
+            textViewProgress.setText("Progress: 0%");
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            for (int i = 1; i <= 100; i++) {
+                try {
+                    Thread.sleep(50); // Simulate long task
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                publishProgress(i);
+            }
+            return "Task Completed!";
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            progressBar.setProgress(values[0]);
+            textViewProgress.setText("Progress: " + values[0] + "%");
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Toast.makeText(MainActivity3.this, result, Toast.LENGTH_SHORT).show();
+        }
     }
 }
